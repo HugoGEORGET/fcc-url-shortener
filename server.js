@@ -38,14 +38,14 @@ app.get("/api/hello", function(req, res) {
   res.json({ greeting: "hello API" });
 });
 
-const urlPattern = '/^https?://www.[-a-zA-Z0-9@:%._+~#=]{1,256}.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/';
-
+const urlPattern = /https?:\/\/www.[a-zA-Z0-9@:%._+-~#=]{1,256}.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
+const urlRegex = new RegExp(urlPattern);
 
 app.post("/api/shorturl/new", (req, res) => {
   console.log(req.body.url);
-  console.log(req.body.url.match(urlRegex));
-  if (req.body.url.match(urlRegex)) {
-    console.log("match ok");
+  console.log(urlRegex.test(req.body.url));
+  if (urlRegex.test(req.body.url)) {
+    console.log("match ok : " + req.body.url);
 
     let splitUrl = req.body.url.split("/");
     let shortenedUrl = splitUrl.slice(0, 2);
