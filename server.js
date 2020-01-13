@@ -43,17 +43,15 @@ const urlRegex = new RegExp(urlPattern);
 
 app.post("/api/shorturl/new", (req, res) => {
   console.log("URL to be shortened : " + req.body.url);
-  console.log("Is URL ? " + urlRegex.test(req.body.url));
   if (urlRegex.test(req.body.url)) {
-    console.log("match ok : " + req.body.url);
-
     let splitUrl = req.body.url.split("/");
-    let shortenedUrl = splitUrl.slice(0, 2);
+    console.log("splitUrl : " + splitUrl);
+    let shortenedUrl = splitUrl.slice(0, 3).toString();
 
     console.log("shortened URl = " + shortenedUrl);
 
-    dns.lookup(shortenedUrl, res => {
-      res.json({ test: "test..." });
+    dns.lookup(shortenedUrl,()=> {
+      
     });
   } else {
     res.json({ error: "invalid URL" });
