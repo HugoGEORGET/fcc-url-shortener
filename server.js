@@ -42,8 +42,8 @@ const urlPattern = /https?:\/\/www.[a-zA-Z0-9@:%._+-~#=]{1,256}.[a-zA-Z0-9()]{1,
 const urlRegex = new RegExp(urlPattern);
 
 app.post("/api/shorturl/new", (req, res) => {
-  console.log(req.body.url);
-  console.log(urlRegex.test(req.body.url));
+  console.log("URL to be shortened : " + req.body.url);
+  console.log("Is URL ? " + urlRegex.test(req.body.url));
   if (urlRegex.test(req.body.url)) {
     console.log("match ok : " + req.body.url);
 
