@@ -10,6 +10,7 @@ var cors = require("cors");
 var dns = require("dns");
 
 var app = express();
+var bodyParser = require("body-parser");
 
 // Basic Configuration
 var port = process.env.PORT || 3000;
@@ -19,6 +20,9 @@ var port = process.env.PORT || 3000;
 // mongoose.connect(process.env.MONGOLAB_URI);
 
 app.use(cors());
+
+// body-parser setup
+app.use(bodyParser.urlencoded({ extended: false }));
 
 /** this project needs to parse POST bodies **/
 // you should mount the body-parser here
@@ -34,15 +38,21 @@ app.get("/api/hello", function(req, res) {
   res.json({ greeting: "hello API" });
 });
 
-const urlRegex =
-  "/((([A-Za-z]{3,9}:(?://)?)(?:[-;:&=+$,w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=+$,w]+@)[A-Za-z0-9.-]+)((?:/[+~%/.w-_]*)???(?:[-+=&;%@.w_]*)#?(?:[.!/\\w]*))?)/";
+const urlRegex = new RegExp(
+  "/((([A-Za-z]{3,9}:(?://)?)(?:[-;:&=+$,w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=+$,w]+@)[A-Za-z0-9.-]+)((?:/[+~%/.w-_]*)???(?:[-+=&;%@.w_]*)#?(?:[.!/\\w]*))?)/"
+);
 
 app.post("/api/shorturl/new", (req, res) => {
-  if (urlRegex.test(req.body.original_url)) {
-    let splitUrl = req.body.original_url.split('/');
-    let shortenedUrl = splitUrl.slice(0,)
+  console.log(req.body);
+  if (urlRegex.match(req.body.url)) {
+    let splitUrl = req.body.url.split("/");
+    let shortenedUrl = splitUrl.slice(0, 2);
+
+    dns.lookup(splitUrl, res => {
+      res.json({ test: "test..." });
+    });
   }
-  res.json({"error":"invalid URL"});
+  res.json({ error: "invalid URL" });
 });
 
 app.listen(port, function() {
