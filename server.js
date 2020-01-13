@@ -38,21 +38,26 @@ app.get("/api/hello", function(req, res) {
   res.json({ greeting: "hello API" });
 });
 
-const urlRegex = new RegExp(
-  "/((([A-Za-z]{3,9}:(?://)?)(?:[-;:&=+$,w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=+$,w]+@)[A-Za-z0-9.-]+)((?:/[+~%/.w-_]*)???(?:[-+=&;%@.w_]*)#?(?:[.!/\\w]*))?)/"
-);
+const urlPattern = '/^https?://www.[-a-zA-Z0-9@:%._+~#=]{1,256}.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/';
+
 
 app.post("/api/shorturl/new", (req, res) => {
-  console.log(req.body);
-  if (urlRegex.match(req.body.url)) {
+  console.log(req.body.url);
+  console.log(req.body.url.match(urlRegex));
+  if (req.body.url.match(urlRegex)) {
+    console.log("match ok");
+
     let splitUrl = req.body.url.split("/");
     let shortenedUrl = splitUrl.slice(0, 2);
 
-    dns.lookup(splitUrl, res => {
+    console.log("shortened URl = " + shortenedUrl);
+
+    dns.lookup(shortenedUrl, res => {
       res.json({ test: "test..." });
     });
+  } else {
+    res.json({ error: "invalid URL" });
   }
-  res.json({ error: "invalid URL" });
 });
 
 app.listen(port, function() {
